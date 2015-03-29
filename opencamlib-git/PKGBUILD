@@ -1,0 +1,41 @@
+# Contributor: Perttu Ahola <gmail/celeron55>
+# Contributor: Alex Hall <alumni.purdue.edu/hall12>
+# Maintainer: Mathieu Gaborit <mat.gaborit@gmx.com>
+
+_gitname=opencamlib
+pkgname=$_gitname-git
+pkgver=1
+pkgrel=3
+pkgdesc="Multi-Purpose CNC Toolpath Library"
+arch=('i686' 'x86_64')
+url="http://github.com/aewallin/opencamlib/"
+license=('GPL3')
+makedepends=('git' 'python2' 'boost' 'cmake')
+depends=('python2' 'boost')
+provides=('opencamlib')
+conflicts=('opencamlib')
+source=("git://github.com/aewallin/$_gitname" 'CMakeLists.txt.patch')
+md5sums=('SKIP' 'SKIP')
+
+build() {
+  cd $srcdir/$_gitname
+
+  cd src
+  patch < $srcdir/CMakeLists.txt.patch
+  cd ..
+
+  mkdir -p build
+  cd build
+
+  msg "Starting make..."
+
+  cmake -DCMAKE_INSTALL_PREFIX=$pkgdir/usr ../src
+
+  make
+}
+
+package() {
+  cd $srcdir/$_gitname/build
+  make install
+}
+
